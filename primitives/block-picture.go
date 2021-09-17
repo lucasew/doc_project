@@ -1,26 +1,14 @@
 package primitives
 
 import (
-	"image"
-	"net/url"
+    "github.com/lucasew/doc_project/providers"
 )
 
 type BlockPicture struct {
-    image Image
+    image providers.Image
 }
 
-type Image interface {
-    ToDataURL() url.URL
-    ToRaw() RawImage
-    ToImage() image.Image
-}
-
-type RawImage interface {
-    ImageExtension() string
-    ImageBytes() []byte
-}
-
-func NewBlockPicture(image Image) DocumentBlockNode {
+func NewBlockPicture(image providers.Image) DocumentBlockNode {
     return &BlockPicture{image: image}
 }
 
