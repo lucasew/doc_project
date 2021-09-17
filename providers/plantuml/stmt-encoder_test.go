@@ -14,3 +14,4 @@ func TestEncodeStatement(t *testing.T) {
     }
     testCase("@startuml\nBob -> Alice : hello\n@enduml", "~1UDfoA2v9B2efpStXSifFKj2rKt3CoKnELR1Io4ZDoSddSaZDIodDpG44003___W93C00")
 }
+
