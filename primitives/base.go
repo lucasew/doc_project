@@ -15,22 +15,22 @@ type DocumentNode interface {
 
 type DocumentInlineNode interface {
     DocumentNode
-    // ImplInlineNode: just a signal when typechecking
     Children() []DocumentInlineNode
+    // ImplInlineNode: just a signal when typechecking
     ImplInlineNode()
 }
 
 type DocumentTextInlineNode interface {
     DocumentNode
-    ImplInlineNode()
     ExtractText() string
     Children() []DocumentTextInlineNode
+    ImplInlineNode()
 }
 
 type DocumentBlockNode interface {
     DocumentNode
+    Children() []DocumentBlockNode
     // ImplBlockNode: just a signal when typechecking
     ImplBlockNode()
-    Children() []DocumentNode
 }
 
