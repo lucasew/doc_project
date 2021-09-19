@@ -1,18 +1,26 @@
 package primitives
 
-import "bytes"
+import (
+	"bytes"
+
+	"github.com/lucasew/doc_project/components"
+)
 
 type InlineStrikethrough struct {
-    children []DocumentTextInlineNode
+    children []components.DocumentTextInlineNode
 }
 
-func NewStrikethroughText(nodes ...DocumentTextInlineNode) DocumentTextInlineNode {
+func NewStrikethroughText(nodes ...components.DocumentTextInlineNode) components.DocumentTextInlineNode {
     return &InlineStrikethrough{
         children: nodes,
     }
 }
 
-func (b *InlineStrikethrough) Children() []DocumentTextInlineNode {
+func (InlineStrikethrough) NodeKind() string {
+    return "inline-strikethrough"
+}
+
+func (b *InlineStrikethrough) Children() []components.DocumentTextInlineNode {
     return b.children
 }
 

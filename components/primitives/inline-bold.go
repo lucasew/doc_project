@@ -1,24 +1,30 @@
 package primitives
 
-import "bytes"
+import (
+	"bytes"
 
-type InlineHyperlink struct {
-    children []DocumentTextInlineNode
-    url string
+	"github.com/lucasew/doc_project/components"
+)
+
+type InlineBold struct {
+    children []components.DocumentTextInlineNode
 }
 
-func NewHyperlinkText(url string, nodes ...DocumentTextInlineNode) DocumentTextInlineNode {
-    return &InlineHyperlink{
+func NewBoldText(nodes ...components.DocumentTextInlineNode) components.DocumentTextInlineNode {
+    return &InlineBold{
         children: nodes,
-        url: url,
     }
 }
 
-func (b *InlineHyperlink) Children() []DocumentTextInlineNode {
+func (InlineBold) NodeKind() string {
+    return "inline-bold"
+}
+
+func (b *InlineBold) Children() []components.DocumentTextInlineNode {
     return b.children
 }
 
-func (b *InlineHyperlink) ExtractText() string {
+func (b *InlineBold) ExtractText() string {
     if len(b.children) == 0 {
         return ""
     }
@@ -40,5 +46,5 @@ func (b *InlineHyperlink) ExtractText() string {
     return buf.String()
 }
 
-func (InlineHyperlink) ImplInlineNode() {}
-func (InlineHyperlink) ImplDocumentNode() {}
+func (InlineBold) ImplInlineNode() {}
+func (InlineBold) ImplDocumentNode() {}

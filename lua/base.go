@@ -1,10 +1,7 @@
-package lua
+package app_lua
 
 import (
-	"time"
-
 	"github.com/yuin/gopher-lua"
-    luajson "layeh.com/gopher-json"
 )
 
 func NewVoidLuaFunction(L *lua.LState, fn func ()) *lua.LFunction {
@@ -14,32 +11,26 @@ func NewVoidLuaFunction(L *lua.LState, fn func ()) *lua.LFunction {
     })
 }
 
-func NewCommonState(opts lua.Options) *lua.LState {
-    opts.SkipOpenLibs = true
-    L := lua.NewState(opts)
-    L.Push(L.NewFunction(LoadStdlib))
-    L.Call(1, 0)
-    return L
+const userdataRefKey = lua.LString("_ref")
+
+type CustomLuaType interface {
+    LuaType() string
 }
 
-func LoadStdlib(L *lua.LState) int {
-    L.SetGlobal("sleep", L.NewFunction(func (L *lua.LState) int {
-        ms := L.CheckInt(1)
-        time.Sleep(time.Millisecond*time.Duration(ms))
-        return 0
-    }))
-    L.Push(L.NewFunction(lua.OpenBase))
-    L.Push(lua.LString(lua.BaseLibName))
-    L.Call(1, 0)
-    L.Push(L.NewFunction(lua.OpenString))
-    L.Push(lua.LString(lua.StringLibName))
-    L.Call(1, 0)
-    L.Push(L.NewFunction(lua.OpenIo))
-    L.Push(lua.LString(lua.IoLibName))
-    L.Call(1, 0)
-    L.Push(L.NewFunction(lua.OpenMath))
-    L.Push(lua.LString(lua.MathLibName))
-    L.Call(1, 0)
-    luajson.Loader(L)
-    return 0
+func WrapObject(L *lua.LState, object CustomLuaType, methods map[string]lua.LGFunction) *lua.LTable {
+    ud := L.NewUserData()
+    ud.Value = object
+    mt := L.NewTypeMetatable(object.LuaType())
+    mt.RawSetString("__index", mt)
+    L.SetFuncs(mt, methods)
+    ret := L.NewTable()
+    L.SetMetatable(ret, mt)
+    ret.RawSetString("__index", mt)
+    ret.RawSet(userdataRefKey, ud)
+    return ret
+}
+
+func UnwrapObject(table *lua.LTable) interface{} {
+    ud := table.RawGet(userdataRefKey).(*lua.LUserData)
+    return ud.Value
 }

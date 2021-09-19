@@ -1,4 +1,4 @@
-package primitives
+package components
 
 import "time"
 
@@ -6,11 +6,12 @@ type Document interface {
     CreatedAt() time.Time
     DocumentTitle() string
     RawMetadata() map[string]interface{}
-    Nodes() []DocumentNode
+    Nodes() []DocumentBlockNode
 }
 
 type DocumentNode interface {
     ImplDocumentNode()
+    NodeKind() string
 }
 
 type DocumentInlineNode interface {

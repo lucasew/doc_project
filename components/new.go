@@ -1,4 +1,4 @@
-package primitives
+package components
 
 func NewEmptyDocumentBlockNodeList() []DocumentBlockNode {
     return []DocumentBlockNode{}

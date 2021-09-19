@@ -1,19 +1,26 @@
-
 package primitives
 
-import "bytes"
+import (
+	"bytes"
+
+	"github.com/lucasew/doc_project/components"
+)
 
 type InlineItalic struct {
-    children []DocumentTextInlineNode
+    children []components.DocumentTextInlineNode
 }
 
-func NewItalicText(nodes ...DocumentTextInlineNode) DocumentTextInlineNode {
+func NewItalicText(nodes ...components.DocumentTextInlineNode) components.DocumentTextInlineNode {
     return &InlineItalic{
         children: nodes,
     }
 }
 
-func (b *InlineItalic) Children() []DocumentTextInlineNode {
+func (InlineItalic) NodeKind() string {
+    return "inline-italic"
+}
+
+func (b *InlineItalic) Children() []components.DocumentTextInlineNode {
     return b.children
 }
 

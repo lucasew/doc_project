@@ -2,20 +2,26 @@ package primitives
 
 import (
 	"fmt"
+
+	"github.com/lucasew/doc_project/components"
 )
 
 type InlineMath struct {
     stmt string
 }
 
-func NewMathText(stmt string) DocumentTextInlineNode {
+func NewMathText(stmt string) components.DocumentTextInlineNode {
     return &InlineMath{
         stmt: stmt,
     }
 }
 
-func (b *InlineMath) Children() []DocumentTextInlineNode {
-    return []DocumentTextInlineNode{}
+func (InlineMath) NodeKind() string {
+    return "inline-math"
+}
+
+func (b *InlineMath) Children() []components.DocumentTextInlineNode {
+    return []components.DocumentTextInlineNode{}
 }
 
 func (b *InlineMath) ExtractText() string {

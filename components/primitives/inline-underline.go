@@ -1,18 +1,26 @@
 package primitives
 
-import "bytes"
+import (
+	"bytes"
+
+	"github.com/lucasew/doc_project/components"
+)
 
 type InlineUnderline struct {
-    children []DocumentTextInlineNode
+    children []components.DocumentTextInlineNode
 }
 
-func NewUnderlineText(nodes ...DocumentTextInlineNode) DocumentTextInlineNode {
+func NewUnderlineText(nodes ...components.DocumentTextInlineNode) components.DocumentTextInlineNode {
     return &InlineUnderline{
         children: nodes,
     }
 }
 
-func (b *InlineUnderline) Children() []DocumentTextInlineNode {
+func (InlineUnderline) NodeKind() string {
+    return "inline-underline"
+}
+
+func (b *InlineUnderline) Children() []components.DocumentTextInlineNode {
     return b.children
 }
 
