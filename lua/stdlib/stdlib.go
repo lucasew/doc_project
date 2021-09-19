@@ -3,7 +3,7 @@ package lua_stdlib
 import (
 	"time"
 
-    "github.com/lucasew/doc_project/lua/base/time"
+    "github.com/lucasew/doc_project/lua/stdlib/base/time"
 	lua "github.com/yuin/gopher-lua"
     luajson "layeh.com/gopher-json"
 )
