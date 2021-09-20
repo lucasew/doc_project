@@ -3,10 +3,17 @@ package lua_stdlib
 import (
 	"time"
 
-    "github.com/lucasew/doc_project/lua/stdlib/base/time"
 	lua "github.com/yuin/gopher-lua"
-    luajson "layeh.com/gopher-json"
+    lua_json "layeh.com/gopher-json"
+    lua_parser "github.com/lucasew/doc_project/lua/stdlib/parser"
+    lua_time "github.com/lucasew/doc_project/lua/stdlib/base/time"
 )
+
+func SetupLibrary(L *lua.LState, lib func(*lua.LState) int, name string) {
+    L.Push(L.NewFunction(lib))
+    L.Push(lua.LString(name))
+    L.Call(1, 0)
+}
 
 func LoadStdlib(L *lua.LState) int {
     L.SetGlobal("sleep", L.NewFunction(func (L *lua.LState) int {
@@ -14,21 +21,12 @@ func LoadStdlib(L *lua.LState) int {
         time.Sleep(time.Millisecond*time.Duration(ms))
         return 0
     }))
-    L.Push(L.NewFunction(lua.OpenBase))
-    L.Push(lua.LString(lua.BaseLibName))
-    L.Call(1, 0)
-    L.Push(L.NewFunction(lua.OpenString))
-    L.Push(lua.LString(lua.StringLibName))
-    L.Call(1, 0)
-    L.Push(L.NewFunction(lua.OpenIo))
-    L.Push(lua.LString(lua.IoLibName))
-    L.Call(1, 0)
-    L.Push(L.NewFunction(lua.OpenMath))
-    L.Push(lua.LString(lua.MathLibName))
-    L.Call(1, 0)
-    L.Push(L.NewFunction(lua_time.OpenTime))
-    L.Push(lua.LString("time"))
-    L.Call(1, 0)
-    luajson.Loader(L)
+    SetupLibrary(L, lua.OpenBase, lua.BaseLibName)
+    SetupLibrary(L, lua.OpenString, lua.StringLibName)
+    SetupLibrary(L, lua.OpenIo, lua.IoLibName)
+    SetupLibrary(L, lua.OpenMath, lua.MathLibName)
+    SetupLibrary(L, lua_time.OpenTime, "time")
+    SetupLibrary(L, lua_parser.OpenParser, "lpeg")
+    SetupLibrary(L, lua_json.Loader, "json")
     return 0
 }
