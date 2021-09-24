@@ -2,7 +2,7 @@ package lua_components
 
 import (
 	"github.com/lucasew/doc_project/components"
-	app_lua "github.com/lucasew/doc_project/lua"
+	"github.com/lucasew/doc_project/lua/utils"
 	lua "github.com/yuin/gopher-lua"
 )
 
@@ -27,11 +27,11 @@ var DocumentMetatable = map[string]lua.LGFunction{
 }
 
 func WrapDocument(L *lua.LState, document components.Document) *lua.LTable {
-    return app_lua.WrapObject(L, NewLuaDocument(document), DocumentMetatable)
+    return utils_lua.WrapObject(L, NewLuaDocument(document), DocumentMetatable)
 }
 
 func UnwrapDocument(L *lua.LState, tbl *lua.LTable) components.Document {
-    val, ok := app_lua.UnwrapObject(tbl).(components.Document)
+    val, ok := utils_lua.UnwrapObject(tbl).(components.Document)
     if !ok {
         L.RaiseError("not a Document")
     }

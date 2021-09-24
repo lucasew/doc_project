@@ -1,13 +1,27 @@
 package lua_stdlib
 
 import (
+	"log"
 	"time"
 
 	lua "github.com/yuin/gopher-lua"
-    lua_json "layeh.com/gopher-json"
-    lua_parser "github.com/lucasew/doc_project/lua/stdlib/parser"
-    lua_time "github.com/lucasew/doc_project/lua/stdlib/base/time"
+	lua_json "layeh.com/gopher-json"
 )
+
+var luaLibs = map[string]lua.LGFunction{}
+
+func RegisterLuaLib( loader lua.LGFunction, name string) {
+    log.Printf("Registering module: %s", name)
+    luaLibs[name] = loader
+}
+
+func init() {
+    RegisterLuaLib(lua.OpenBase, lua.BaseLibName)
+    RegisterLuaLib(lua.OpenString, lua.StringLibName)
+    RegisterLuaLib(lua.OpenIo, lua.IoLibName)
+    RegisterLuaLib(lua.OpenMath, lua.MathLibName)
+    RegisterLuaLib(lua_json.Loader, "json")
+}
 
 func SetupLibrary(L *lua.LState, lib func(*lua.LState) int, name string) {
     L.Push(L.NewFunction(lib))
@@ -21,12 +35,8 @@ func LoadStdlib(L *lua.LState) int {
         time.Sleep(time.Millisecond*time.Duration(ms))
         return 0
     }))
-    SetupLibrary(L, lua.OpenBase, lua.BaseLibName)
-    SetupLibrary(L, lua.OpenString, lua.StringLibName)
-    SetupLibrary(L, lua.OpenIo, lua.IoLibName)
-    SetupLibrary(L, lua.OpenMath, lua.MathLibName)
-    SetupLibrary(L, lua_time.OpenTime, "time")
-    SetupLibrary(L, lua_parser.OpenParser, "lpeg")
-    SetupLibrary(L, lua_json.Loader, "json")
+    for k, v := range luaLibs {
+        SetupLibrary(L, v, k)
+    }
     return 0
 }

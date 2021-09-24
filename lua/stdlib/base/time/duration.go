@@ -3,7 +3,7 @@ package lua_time
 import (
 	"time"
 
-	app_lua "github.com/lucasew/doc_project/lua"
+	"github.com/lucasew/doc_project/lua/utils"
 	lua "github.com/yuin/gopher-lua"
 )
 
@@ -123,11 +123,11 @@ func init() {
 }
 
 func WrapDuration(L *lua.LState, d time.Duration) *lua.LTable {
-    return app_lua.WrapObject(L, NewLuaDuration(d), DurationMetatable)
+    return utils_lua.WrapObject(L, NewLuaDuration(d), DurationMetatable)
 }
 
 func UnwrapDuration(L *lua.LState, tbl *lua.LTable) time.Duration {
-    val, ok := app_lua.UnwrapObject(tbl).(LuaDuration)
+    val, ok := utils_lua.UnwrapObject(tbl).(LuaDuration)
     if !ok {
         L.RaiseError("not a Duration")
     }

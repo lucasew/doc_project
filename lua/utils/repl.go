@@ -1,4 +1,4 @@
-package app_lua
+package utils_lua
 
 import (
 	"fmt"

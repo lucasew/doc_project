@@ -1,15 +1,13 @@
 package lua_components
 
 import (
-	// "testing"
-
-	// "github.com/lucasew/doc_project/components"
 	"testing"
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/lucasew/doc_project/components"
-	"github.com/lucasew/doc_project/lua"
+	lua_new "github.com/lucasew/doc_project/lua/new"
+	"github.com/lucasew/doc_project/lua/utils"
 	lua "github.com/yuin/gopher-lua"
 )
 
@@ -37,12 +35,12 @@ func NewDocumentMock() components.Document {
 
 
 func TestWrapDocument(t *testing.T) {
-    L := app_lua.NewCommonState(lua.Options{})
+    L := lua_new.NewCommonState(lua.Options{})
     mock := NewDocumentMock()
     wrapped := WrapDocument(L, mock)
     spew.Dump(wrapped)
     L.SetGlobal("demo", wrapped)
-    app_lua.RunREPL(L)
+    utils_lua.RunREPL(L)
     err := L.DoString(`
     return demo:title()
     `)

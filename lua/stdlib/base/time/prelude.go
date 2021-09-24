@@ -4,7 +4,12 @@ import (
 	"time"
 
 	lua "github.com/yuin/gopher-lua"
+    "github.com/lucasew/doc_project/lua/stdlib"
 )
+
+func init() {
+    lua_stdlib.RegisterLuaLib(OpenTime, "time")
+}
 
 func OpenTime(L *lua.LState) int {
     varname := L.CheckString(1)

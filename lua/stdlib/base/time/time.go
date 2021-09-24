@@ -3,7 +3,7 @@ package lua_time
 import (
 	"time"
 
-	app_lua "github.com/lucasew/doc_project/lua"
+	"github.com/lucasew/doc_project/lua/utils"
 	lua "github.com/yuin/gopher-lua"
 )
 
@@ -75,7 +75,7 @@ func init() {
     }
     TimeMetatable["__sub"] = func(L *lua.LState) int {
         t := UnwrapTime(L, L.CheckTable(1))
-        secondArgument := app_lua.UnwrapObject(L.CheckTable(2))
+        secondArgument := utils_lua.UnwrapObject(L.CheckTable(2))
         switch v := secondArgument.(type) {
             case time.Duration:
                 L.Push(WrapTime(L, t.Add(-v)))
@@ -88,11 +88,11 @@ func init() {
     }
 }
 func WrapTime(L *lua.LState, t time.Time) *lua.LTable {
-    return app_lua.WrapObject(L, NewLuaTime(t), TimeMetatable)
+    return utils_lua.WrapObject(L, NewLuaTime(t), TimeMetatable)
 }
 
 func UnwrapTime(L *lua.LState, tbl *lua.LTable) time.Time {
-    val, ok := app_lua.UnwrapObject(tbl).(LuaTime)
+    val, ok := utils_lua.UnwrapObject(tbl).(LuaTime)
     if !ok {
         L.RaiseError("not a Time")
     }

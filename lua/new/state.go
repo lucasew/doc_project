@@ -1,8 +1,8 @@
 package lua_new
 
 import (
-    lua "github.com/yuin/gopher-lua"
-    "github.com/lucasew/doc_project/lua/stdlib"
+	"github.com/lucasew/doc_project/lua/stdlib"
+	lua "github.com/yuin/gopher-lua"
 )
 
 func NewCommonState(opts lua.Options) *lua.LState {
