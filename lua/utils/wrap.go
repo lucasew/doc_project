@@ -27,10 +27,18 @@ func WrapObject(L *lua.LState, object app_lua.CustomLuaType, methods map[string]
     return ret
 }
 
+type LuaUnwrappable interface {
+    LuaUnwrap() interface{}
+}
+
 func UnwrapObject(table *lua.LTable) interface{} {
     ref := table.RawGet(userdataRefKey)
     switch v := ref.(type) {
         case *lua.LUserData:
+            switch ud := v.Value.(type) {
+                case LuaUnwrappable:
+                    return ud.LuaUnwrap()
+            }
             return v.Value
         default:
             return nil
