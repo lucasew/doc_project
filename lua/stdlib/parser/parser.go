@@ -211,30 +211,7 @@ func lpegMatch(L *lua.LState) int {
                 case nil:
                     L.Push(lua.LNil)
                 case lpeg.CaptureTable:
-                    tblen := len(tv)
-                    isList := true
-                    for i := 1; i <= tblen; i++ {
-                        _, ok := tv[i]
-                        if !ok {
-                            isList = false
-                        }
-                    }
-                    if isList {
-                        tbl := L.NewTable()
-                        for i := 1; i <= tblen; i++ {
-                            switch toAdd := tv[i].(type) {
-                            case int:
-                                tbl.Append(lua.LNumber(float64(toAdd)))
-                            case string:
-                                tbl.Append(lua.LString(toAdd))
-                            default:
-                                L.RaiseError("match: capture table: %T return is not defined yet", toAdd)
-                            }
-                        }
-                        L.Push(tbl)
-                    } else {
-                        L.RaiseError("match: ret parameter is not a list")
-                    }
+                    L.Push(WrapCaptureTable(L, tv))
                 default:
                     L.RaiseError("match: type %T still not supported for return", tv)
             }
