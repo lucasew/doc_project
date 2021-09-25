@@ -19,8 +19,8 @@ func init() {
 func normalizePattern(value lua.LValue) (*lpeg.Pattern, error) {
     trivial := utils_lua.Trivialize(value, true)
     switch v := trivial.(type) {
-        case LuaPattern:
-            return v.Pattern, nil
+        case *lpeg.Pattern:
+            return v, nil
         case *lua.LTable:
             ret, err := normalizeGrammar(value)
             if err != nil {
@@ -40,9 +40,9 @@ func normalizeGrammar(value lua.LValue) (*lpeg.Pattern, error) {
     switch typedValue := utils_lua.Trivialize(value, true).(type) {
         case *lua.LTable:
             switch firstValue := utils_lua.Trivialize(typedValue.RawGetInt(1), true).(type) {
-                case LuaPattern:
+                case *lpeg.Pattern:
                     var g lpeg.Grammar
-                    g.AddRule("1", firstValue.Pattern)
+                    g.AddRule("1", firstValue)
                     return lpeg.P(g), nil
                 case string, int, int64, float64:
                     initialSymbol = fmt.Sprintf("%v", firstValue)
@@ -99,9 +99,6 @@ func OpenParser(L *lua.LState) int {
     L.Push(module)
     return 1
 }
-
-
-
 
 func lpegP(L *lua.LState) int {
     raw := L.CheckAny(1)
@@ -179,17 +176,11 @@ func lpegVersionFn(L *lua.LState) int {
 }
 
 func lpegType(L *lua.LState) int {
-    any_obj := L.CheckAny(1)
-    if any_obj.Type() != lua.LTTable {
-        L.Push(lua.LNil)
-    } else {
-        table := L.CheckTable(1)
-        _, ok := utils_lua.UnwrapObject(table).(LuaPattern)
-        if ok {
+    switch utils_lua.Trivialize(L.CheckAny(1), true).(type) {
+        case *lpeg.Pattern:
             L.Push(lua.LString("pattern"))
-        } else {
+        default:
             L.Push(lua.LNil)
-        }
     }
     return 1
 }

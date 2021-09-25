@@ -1,6 +1,7 @@
 package lua_parser
 
 import (
+	"github.com/davecgh/go-spew/spew"
 	utils_lua "github.com/lucasew/doc_project/lua/utils"
 	"github.com/redstorm-fyy/lpeg"
 	lua "github.com/yuin/gopher-lua"
@@ -49,6 +50,12 @@ func init() {
                 L.Push(WrapPattern(L, a.Sc(trivialized)))
             case int:
                 L.Push(WrapPattern(L, a.Nc(trivialized)))
+            case *lua.LFunction:
+                newPattern := a.Fc(func (in ...interface{}) []interface{} {
+                    spew.Dump(in)
+                    return nil
+                })
+                L.Push(WrapPattern(L, newPattern))
             case *lua.LTable:
                 qt := lpeg.CaptureTable{}
                 trivialized.ForEach(func (k lua.LValue, v lua.LValue) {
@@ -100,6 +107,10 @@ func (LuaPattern) LuaType() string {
     return "Pattern"
 }
 
+func (l LuaPattern) LuaUnwrap() interface{} {
+    return l.Pattern
+}
+
 func NewLuaPattern(pattern *lpeg.Pattern) LuaPattern {
     return LuaPattern{pattern}
 }
@@ -109,5 +120,5 @@ func WrapPattern(L *lua.LState, pattern *lpeg.Pattern) lua.LValue {
 }
 
 func UnwrapPattern(table *lua.LTable) *lpeg.Pattern {
-    return utils_lua.UnwrapObject(table).(LuaPattern).Pattern
+    return utils_lua.UnwrapObject(table).(*lpeg.Pattern)
 }
